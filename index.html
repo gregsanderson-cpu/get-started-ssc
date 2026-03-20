@@ -576,6 +576,21 @@
 </div>
 
 <script>
+  // Pre-fill screen 1 from URL params (passed from joining form)
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const name   = params.get('name');
+    const email  = params.get('email');
+    const school = params.get('school');
+    if (name || email || school) {
+      window.addEventListener('DOMContentLoaded', function() {
+        if (name  && document.getElementById('teacherName'))  document.getElementById('teacherName').value  = name;
+        if (email && document.getElementById('teacherEmail')) document.getElementById('teacherEmail').value = email;
+        if (school && document.getElementById('schoolName'))  document.getElementById('schoolName').value   = school;
+      });
+    }
+  })();
+
   const TOTAL = 9;
   let currentScreen = 1;
   let selectedTopic = '';
