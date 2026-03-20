@@ -859,45 +859,16 @@
   // -------------------------------------------------------
 
   async function sendToActiveCampaign(data) {
-    // We route through a small proxy to avoid CORS issues.
-    // The proxy just forwards the request to ActiveCampaign server-side.
-    // If you're using Netlify, you can use a Netlify Function (see README).
-    // For now this calls AC directly — works fine for testing.
     try {
-      // 1. Create or update the contact
-      const contactPayload = {
-        contact: {
-          email: data.teacherEmail,
-          firstName: data.teacherName.split(' ')[0] || data.teacherName,
-          lastName: data.teacherName.split(' ').slice(1).join(' ') || '',
-          fieldValues: [
-            { field: 'SCHOOL_NAME',   value: data.schoolName },
-            { field: 'CLASS_NAMES',   value: data.classNames },
-            { field: 'TOPIC',         value: data.topic },
-            { field: 'QUESTION',      value: data.question },
-            { field: 'TIMING',        value: data.timing },
-            { field: 'WANTS_IMAGES',  value: data.wantsImages },
-          ]
-        }
-      };
-
-      const response = await fetch(`${AC_API_URL}/api/3/contact/sync`, {
+      const response = await fetch('https://bigdebate.club/ac-proxy.php', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Api-Token': AC_API_KEY
-        },
-        body: JSON.stringify(contactPayload)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       });
-
-      if (!response.ok) {
-        console.warn('ActiveCampaign contact sync failed:', response.status);
-      } else {
-        console.log('ActiveCampaign: contact synced successfully');
-      }
+      if (!response.ok) console.warn('AC proxy error:', response.status);
+      else console.log('AC: contact synced');
     } catch (err) {
-      // Don't block the user journey if AC call fails
-      console.warn('ActiveCampaign error (non-blocking):', err);
+      console.warn('AC proxy unreachable (non-blocking):', err);
     }
   }
 
