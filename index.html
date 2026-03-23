@@ -881,9 +881,10 @@
 
   function handleCustomOptions() {
     const inputs = document.querySelectorAll('.custom-option-input');
-    const filled = Array.from(inputs).filter(i => i.value.trim());
+    const filled = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
     if (filled.length === 0) { showError('optionsError', 'Please add at least one answer option.'); return; }
     hideError('optionsError');
+    selectedQuestionOptions = filled;
     goTo(6);
   }
 
