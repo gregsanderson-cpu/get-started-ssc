@@ -609,17 +609,6 @@
       <input type="text" class="custom-option-input" placeholder="Option 2" autocomplete="off">
     </div>
     <button type="button" id="addOptionBtn" onclick="addOptionInput()" style="background:none;border:none;color:#3aac5d;font-family:inherit;font-size:0.88rem;font-weight:700;cursor:pointer;align-self:flex-start;padding:0;margin-bottom:16px;">+ Add another option</button>
-    <div class="image-offer-card">
-      <span style="font-size:1.5rem">🖼️</span>
-      <div style="width:100%">
-        <p style="font-weight:700;color:#1a1a2e;font-size:0.95rem;margin-bottom:4px">Want images for your answer options?</p>
-        <p style="color:#7a8499;font-size:0.85rem;line-height:1.5;margin-bottom:12px">Our team can add images to make your first Class Meeting even more engaging. We'll sort it before your login is ready.</p>
-        <div style="display:flex;gap:10px;">
-          <button type="button" class="btn-image-choice" id="imgYes" onclick="selectImageChoice('yes')">Yes please!</button>
-          <button type="button" class="btn-image-choice" id="imgNo" onclick="selectImageChoice('no')">No thanks</button>
-        </div>
-      </div>
-    </div>
     <p id="optionsError" style="color:#e53e3e;font-size:0.85rem;margin-top:8px;display:none;"></p>
     <button type="button" class="btn-primary" onclick="handleCustomOptions()" style="margin-top:12px">Continue</button>
   </div>
@@ -873,7 +862,6 @@
     }
   }
 
-  let imageChoice = '';
 
   function addOptionInput() {
     const container = document.getElementById('optionInputs');
@@ -891,18 +879,10 @@
     input.focus();
   }
 
-  function selectImageChoice(choice) {
-    imageChoice = choice;
-    document.getElementById('imgYes').classList.toggle('selected', choice === 'yes');
-    document.getElementById('imgNo').classList.toggle('selected', choice === 'no');
-    hideError('optionsError');
-  }
-
   function handleCustomOptions() {
     const inputs = document.querySelectorAll('.custom-option-input');
     const filled = Array.from(inputs).filter(i => i.value.trim());
     if (filled.length === 0) { showError('optionsError', 'Please add at least one answer option.'); return; }
-    if (!imageChoice) { showError('optionsError', 'Please let us know if you would like images for your options.'); return; }
     hideError('optionsError');
     goTo(6);
   }
@@ -925,12 +905,6 @@
       if (filled.length > 0) {
         optionsList.innerHTML = filled.map(o => `<li>${o}</li>`).join('');
         optionsWrap.style.display = 'block';
-        if (reminder) {
-          reminder.textContent = imageChoice === 'yes'
-            ? '🖼️ We\'ll add images to these options before your login is ready.'
-            : 'No images requested — these will appear as text options for pupils.';
-          reminder.style.display = 'block';
-        }
       } else {
         optionsWrap.style.display = 'none';
       }
@@ -1018,8 +992,7 @@
       topic: selectedTopic,
       question: selectedQuestion,
       options: selectedQuestionOptions || [],
-      timing: timingBtn ? timingBtn.textContent.trim() : '',
-      wantsImages: typeof imageChoice !== 'undefined' ? imageChoice : ''
+      timing: timingBtn ? timingBtn.textContent.trim() : ''
     };
 
     // Send to ActiveCampaign (non-blocking)
