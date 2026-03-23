@@ -890,7 +890,7 @@
     const firstName = isTitled && nameParts.length > 1 ? nameParts[1] : nameParts[0];
     const lastName  = nameParts.slice(isTitled ? 2 : 1).join(' ');
     const classes   = data.classNames.split('\n').map(c => c.trim()).filter(Boolean);
-    fetch('https://script.google.com/macros/s/AKfycbyV4Q7XLhz4FSAr9_9zVMNynMJrYG41F9nRbf5BfMjvPEkc80C_9_0T1Iab70BnZn_D/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbywW8J5evQwgMX_TO0UZJyjSwRfyKUVcS3_dtrRMMh5wQy7yg24vlxYYPXPGY08CiI/exec', {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
