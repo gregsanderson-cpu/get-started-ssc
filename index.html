@@ -407,6 +407,36 @@
   .hint { color: var(--text-light); font-size: 0.9rem; text-align: center; margin-top: 6px; }
 
   /* Screen-7 success styles */
+  @keyframes newPinPulse {
+    0%, 100% { transform: scale(1);   opacity: 1; }
+    50%       { transform: scale(1.6); opacity: 0.6; }
+  }
+  .new-pin {
+    width: 16px; height: 16px;
+    background: #ff6b35;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    animation: newPinPulse 1.1s ease-in-out 5;
+  }
+  #memberMapWrap {
+    width: 100%;
+    height: 240px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 4px 0 16px;
+    background: var(--green-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  #memberMapLoading {
+    color: var(--text-light);
+    font-size: 0.83rem;
+    font-weight: 600;
+  }
+  #memberMap { width: 100%; height: 100%; }
   @keyframes checkPop {
     0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
     60%  { transform: scale(1.15) rotate(4deg); opacity: 1; }
@@ -644,15 +674,13 @@
           <p>Your Class Meeting is live and ready to go.</p>
         </div>
       </div>
-      <div class="next-step">
-        <div class="next-step-num">3</div>
-        <div>
-          <strong>See who else is nearby</strong>
-          <p>Find other Smart School Councils members on our map.</p>
-          <a href="https://www.google.com/maps/d/u/0/edit?mid=1uVryNKQXb3gkTVX7HVdSwPgLgIiabCM&ll=53.383991182609094%2C-2.6321649444105666&z=14" class="btn-map" target="_blank" rel="noopener" style="margin-top:10px;display:inline-block;width:auto;padding:10px 18px;font-size:0.9rem;">🗺️ See our live member map →</a>
-        </div>
-      </div>
     </div>
+
+    <div id="memberMapWrap">
+      <div id="memberMapLoading">Loading member map...</div>
+      <div id="memberMap" style="display:none"></div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-light);text-align:center;margin-top:-8px;margin-bottom:4px">Your school will appear on the map once your account is ready ✨</p>
   </div>
 
 </div>
@@ -919,6 +947,96 @@
     showConfirmation();
   }
 
+  // -------------------------------------------------------
+  // MEMBER MAP
+  // -------------------------------------------------------
+  const MAP_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ENzB0tvkyO6Frl-peGykkHjptH-lGjSO_eqado81RME/export?format=csv&gid=0';
+  let memberMapInstance = null;
+  let pendingMapLat = null;
+  let pendingMapLng = null;
+  let pendingMapName = null;
+
+  function initMemberMap() {
+    if (memberMapInstance) return;
+    if (!document.getElementById('leaflet-css')) {
+      const link = document.createElement('link');
+      link.id = 'leaflet-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
+    if (!window.L) {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      s.onload = renderMemberMap;
+      document.head.appendChild(s);
+    } else {
+      renderMemberMap();
+    }
+  }
+
+  function renderMemberMap() {
+    const wrap  = document.getElementById('memberMapWrap');
+    const mapEl = document.getElementById('memberMap');
+    const loadEl = document.getElementById('memberMapLoading');
+    if (!mapEl || memberMapInstance) return;
+    mapEl.style.display = 'block';
+    if (loadEl) loadEl.style.display = 'none';
+
+    memberMapInstance = L.map('memberMap', { zoomControl: false, attributionControl: false })
+      .setView([53.5, -2.0], 5);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 })
+      .addTo(memberMapInstance);
+
+    fetch(MAP_CSV_URL)
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        parseMapCSV(csv).forEach(function(s) {
+          if (!isNaN(s.lat) && !isNaN(s.lng)) {
+            L.circleMarker([s.lat, s.lng], {
+              radius: 5, fillColor: '#3aac5d', color: '#fff', weight: 1.5, fillOpacity: 0.85
+            }).addTo(memberMapInstance).bindPopup('<strong>' + s.name + '</strong>');
+          }
+        });
+        if (pendingMapLat !== null) addNewSchoolPin();
+      })
+      .catch(function(e) { console.warn('Map CSV error:', e); });
+  }
+
+  function parseMapCSV(text) {
+    const rows = [];
+    const lines = text.split('\n');
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const cols = []; let cur = '', inQ = false;
+      for (const ch of line) {
+        if (ch === '"') inQ = !inQ;
+        else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+        else cur += ch;
+      }
+      cols.push(cur.trim());
+      rows.push({ name: cols[0] || '', lat: parseFloat(cols[3]), lng: parseFloat(cols[4]) });
+    }
+    return rows;
+  }
+
+  function addNewSchoolPin() {
+    if (!memberMapInstance || pendingMapLat === null) return;
+    memberMapInstance.flyTo([pendingMapLat, pendingMapLng], 12, { duration: 2.2 });
+    setTimeout(function() {
+      const icon = L.divIcon({
+        className: '',
+        html: '<div class="new-pin"></div>',
+        iconSize: [16, 16], iconAnchor: [8, 8]
+      });
+      L.marker([pendingMapLat, pendingMapLng], { icon: icon })
+        .addTo(memberMapInstance)
+        .bindPopup('<strong>' + (pendingMapName || 'Your school') + '</strong><br><span style="color:#3aac5d">Just joined! 🎉</span>')
+        .openPopup();
+    }, 2500);
+  }
+
   function goToConfirmation() {
     // Personalise heading and subtitle
     const heading = document.getElementById('confirmHeading');
@@ -945,6 +1063,7 @@
 
     // Show screen, then animate checkmark + confetti
     goTo(7);
+    initMemberMap();
     setTimeout(function() {
       const check = document.getElementById('successCheck');
       if (check) check.classList.add('pop');
@@ -976,10 +1095,19 @@
     const classes   = data.classNames.split(/[\n,]/).map(c => c.trim()).filter(Boolean);
     fetch('https://script.google.com/macros/s/AKfycbysZraDP2Hy2MCWExv4K4cn5W1i1EKilJDaUp9iXKwk3WAqyP3OaFA9TkCqH8X6EuVG/exec', {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ firstName, lastName, email: data.teacherEmail, schoolName: data.schoolName, classes, question: data.question, options: data.options || [] })
-    }).catch(err => console.warn('GAS error:', err));
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result && result.lat && result.lng) {
+        pendingMapLat  = result.lat;
+        pendingMapLng  = result.lng;
+        pendingMapName = data.schoolName;
+        if (memberMapInstance) addNewSchoolPin();
+      }
+    })
+    .catch(function(err) { console.warn('GAS error:', err); });
   }
 
   function handleFinish() {
