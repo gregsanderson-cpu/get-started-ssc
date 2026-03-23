@@ -1037,6 +1037,26 @@
     }, 2500);
   }
 
+  function quickGeocodeSchool(schoolName) {
+    const q = encodeURIComponent(schoolName + ', UK');
+    fetch('https://nominatim.openstreetmap.org/search?q=' + q + '&format=json&limit=1&email=info@smartschoolcouncils.org.uk')
+      .then(function(r) { return r.json(); })
+      .then(function(results) {
+        if (!results || !results.length) return;
+        const lat = parseFloat(results[0].lat);
+        const lng = parseFloat(results[0].lon);
+        if (isNaN(lat) || isNaN(lng)) return;
+        // Only set if GAS hasn't already returned more accurate coords
+        if (pendingMapLat === null) {
+          pendingMapLat  = lat;
+          pendingMapLng  = lng;
+          pendingMapName = schoolName;
+          if (memberMapInstance) addNewSchoolPin();
+        }
+      })
+      .catch(function() {});
+  }
+
   function goToConfirmation() {
     // Personalise heading and subtitle
     const heading = document.getElementById('confirmHeading');
@@ -1064,6 +1084,8 @@
     // Show screen, then animate checkmark + confetti
     goTo(7);
     initMemberMap();
+    const _sName = document.getElementById('schoolName') ? document.getElementById('schoolName').value.trim() : '';
+    if (_sName) quickGeocodeSchool(_sName);
     setTimeout(function() {
       const check = document.getElementById('successCheck');
       if (check) check.classList.add('pop');
