@@ -628,12 +628,12 @@
   <div class="screen" id="screen-7">
     <div class="success-check" id="successCheck">✓</div>
     <h1 id="confirmHeading">You're done! 🎉</h1>
-    <p class="subtitle" id="confirmSubtitle" style="margin-bottom:16px">Here's what happens next.</p>
+    <p class="subtitle" id="confirmSubtitle" style="margin-bottom:16px;display:none"></p>
 
     <div class="confirm-card" style="margin-bottom:20px">
       <div class="label">Your First Question</div>
       <div class="question-text" id="finalQuestion"></div>
-      <img id="finalQuestionImage" src="" alt="Answer options" style="max-height:110px;width:auto;border-radius:8px;margin-top:12px;display:none;">
+      <img id="finalQuestionImage" src="" alt="Answer options" style="max-height:110px;width:auto;border-radius:8px;margin-top:12px;display:none;margin-left:auto;margin-right:auto;">
       <div id="finalOptions" style="display:none;margin-top:12px;text-align:center;">
         <ul class="q-options" id="finalOptionsList" style="margin-top:8px;"></ul>
         <p id="imageReminder" style="display:none;margin-top:12px;font-size:0.82rem;color:#7a8499;font-style:italic;"></p>
@@ -949,8 +949,7 @@
     const heading = document.getElementById('confirmHeading');
     const sub = document.getElementById('confirmSubtitle');
     if (schoolNameGlobal) {
-      if (heading) heading.textContent = 'You\'re all set, ' + schoolNameGlobal + '! 🎉';
-      if (sub) sub.textContent = 'We\'re so happy to be helping get more voices heard at ' + schoolNameGlobal + '.';
+      if (heading) heading.textContent = 'You\'re done, ' + schoolNameGlobal + '! 🎉';
     }
 
     // Populate question card
