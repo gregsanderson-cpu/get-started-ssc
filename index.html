@@ -671,7 +671,7 @@
         <div class="next-step-num">2</div>
         <div>
           <strong>Log in and run your first meeting</strong>
-          <p>Your Class Meeting is live and ready to go.</p>
+          <p>Your Class Meeting link will be in the email for you.</p>
         </div>
       </div>
     </div>
@@ -1023,7 +1023,11 @@
 
   function addNewSchoolPin() {
     if (!memberMapInstance || pendingMapLat === null) return;
-    memberMapInstance.flyTo([pendingMapLat, pendingMapLng], 10, { duration: 2.2 });
+    // Zoom instantly (avoids SVG scale artifact), then pan smoothly
+    memberMapInstance.setZoom(10, { animate: false });
+    setTimeout(function() {
+      memberMapInstance.panTo([pendingMapLat, pendingMapLng], { animate: true, duration: 1.5 });
+    }, 80);
     setTimeout(function() {
       const icon = L.divIcon({
         className: '',
@@ -1034,7 +1038,7 @@
         .addTo(memberMapInstance)
         .bindPopup('<strong>' + (pendingMapName || 'Your school') + '</strong><br><span style="color:#3aac5d">Just joined! 🎉</span>')
         .openPopup();
-    }, 2500);
+    }, 1800);
   }
 
   function quickGeocodeSchool(schoolName) {
