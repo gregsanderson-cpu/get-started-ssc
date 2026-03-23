@@ -552,7 +552,7 @@
 
     <p class="subtitle" style="margin-bottom:10px">Paste or type the class names below.</p>
     <div class="textarea-wrap" style="margin-top:12px">
-      <textarea id="classNames" placeholder="e.g. Year 5 Oak&#10;9A&#10;7HG"></textarea>
+      <textarea id="classNames" placeholder="e.g. Year 5 Oak, 9A, 7HG&#10;(one per line or comma-separated)"></textarea>
     </div>
     <p class="hint" style="margin-bottom:8px">You can always add or change classes later.</p>
     <p id="classError" style="color:#e53e3e;font-size:0.85rem;margin-bottom:8px;display:none;"></p>
@@ -973,7 +973,7 @@
     const isTitled = titles.includes((nameParts[0]||'').toLowerCase().replace('.',''));
     const firstName = isTitled && nameParts.length > 1 ? nameParts[1] : nameParts[0];
     const lastName  = nameParts.slice(isTitled ? 2 : 1).join(' ');
-    const classes   = data.classNames.split('\n').map(c => c.trim()).filter(Boolean);
+    const classes   = data.classNames.split(/[\n,]/).map(c => c.trim()).filter(Boolean);
     fetch('https://script.google.com/macros/s/AKfycbysZraDP2Hy2MCWExv4K4cn5W1i1EKilJDaUp9iXKwk3WAqyP3OaFA9TkCqH8X6EuVG/exec', {
       method: 'POST',
       mode: 'no-cors',
