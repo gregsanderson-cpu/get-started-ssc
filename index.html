@@ -633,14 +633,18 @@
     <div class="confirm-card" style="margin-bottom:16px">
       <div class="label">Your First Question</div>
       <div class="question-text" id="finalQuestion"></div>
-      <img id="finalQuestionImage" src="" alt="Answer options" style="width:100%;border-radius:8px;margin-top:12px;display:none;">
+      <img id="finalQuestionImage" src="" alt="Answer options" style="max-height:110px;width:auto;border-radius:8px;margin-top:12px;display:none;">
       <div id="finalOptions" style="display:none;margin-top:12px;text-align:center;">
         <ul class="q-options" id="finalOptionsList" style="margin-top:8px;"></ul>
         <p id="imageReminder" style="display:none;margin-top:12px;font-size:0.82rem;color:#7a8499;font-style:italic;"></p>
       </div>
     </div>
 
-    <div class="next-steps">
+    <p style="font-size:0.8rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">While you wait…</p>
+    <a href="https://www.google.com/maps/d/u/0/edit?mid=1uVryNKQXb3gkTVX7HVdSwPgLgIiabCM&ll=53.383991182609094%2C-2.6321649444105666&z=14" class="btn-map" target="_blank" rel="noopener">🗺️ See our live member map →</a>
+
+    <p style="font-size:0.8rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.07em;margin-top:20px;margin-bottom:8px;">Coming up</p>
+    <div class="next-steps" style="margin:0">
       <div class="next-step">
         <div class="next-step-num">1</div>
         <div>
@@ -655,16 +659,7 @@
           <p>Your Class Meeting is live and ready to go.</p>
         </div>
       </div>
-      <div class="next-step">
-        <div class="next-step-num">3</div>
-        <div>
-          <strong>See who else is nearby</strong>
-          <p>Find other Smart School Councils members on our map.</p>
-        </div>
-      </div>
     </div>
-
-    <a href="https://smartschoolcouncils.org.uk/member-map/" class="btn-map" target="_blank" rel="noopener">🗺️ See our member map →</a>
   </div>
 
 </div>
@@ -685,7 +680,7 @@
     }
   })();
 
-  const TOTAL = 9;
+  const TOTAL = 8;
   let currentScreen = 1;
   let selectedTopic = '';
   let selectedQuestion = '';
