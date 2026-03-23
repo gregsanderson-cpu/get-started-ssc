@@ -991,14 +991,23 @@
     fetch(MAP_CSV_URL)
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        parseMapCSV(csv).forEach(function(s) {
-          if (!isNaN(s.lat) && !isNaN(s.lng)) {
+        const schools = parseMapCSV(csv).filter(function(s) { return !isNaN(s.lat) && !isNaN(s.lng); });
+        let idx = 0;
+        function addBatch() {
+          var end = Math.min(idx + 12, schools.length);
+          for (; idx < end; idx++) {
+            var s = schools[idx];
             L.circleMarker([s.lat, s.lng], {
               radius: 5, fillColor: '#3aac5d', color: '#fff', weight: 1.5, fillOpacity: 0.85
             }).addTo(memberMapInstance).bindPopup('<strong>' + s.name + '</strong>');
           }
-        });
-        if (pendingMapLat !== null) addNewSchoolPin();
+          if (idx < schools.length) {
+            setTimeout(addBatch, 30);
+          } else {
+            if (pendingMapLat !== null) setTimeout(addNewSchoolPin, 400);
+          }
+        }
+        addBatch();
       })
       .catch(function(e) { console.warn('Map CSV error:', e); });
   }
