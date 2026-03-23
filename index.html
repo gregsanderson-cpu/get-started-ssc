@@ -680,7 +680,7 @@
       <div id="memberMapLoading">Loading member map...</div>
       <div id="memberMap" style="display:none"></div>
     </div>
-    <p style="font-size:0.78rem;color:var(--text-light);text-align:center;margin-top:-8px;margin-bottom:4px">Your school will appear on the map once your account is ready ✨</p>
+    <p id="mapCaption" style="font-size:0.78rem;color:var(--text-light);text-align:center;margin-top:-8px;margin-bottom:4px">Find other Smart School Councils members near you ✨</p>
   </div>
 
 </div>
@@ -1023,7 +1023,7 @@
 
   function addNewSchoolPin() {
     if (!memberMapInstance || pendingMapLat === null) return;
-    memberMapInstance.flyTo([pendingMapLat, pendingMapLng], 12, { duration: 2.2 });
+    memberMapInstance.flyTo([pendingMapLat, pendingMapLng], 10, { duration: 2.2 });
     setTimeout(function() {
       const icon = L.divIcon({
         className: '',
