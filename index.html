@@ -406,6 +406,75 @@
   }
   .hint { color: var(--text-light); font-size: 0.9rem; text-align: center; margin-top: 6px; }
 
+  /* Screen-7 success styles */
+  @keyframes checkPop {
+    0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+    60%  { transform: scale(1.15) rotate(4deg); opacity: 1; }
+    80%  { transform: scale(0.95) rotate(-2deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .success-check {
+    width: 72px; height: 72px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    opacity: 0;
+    color: #fff;
+    font-size: 36px;
+    line-height: 1;
+    box-shadow: 0 6px 24px rgba(58,172,93,0.35);
+  }
+  .success-check.pop { animation: checkPop 0.55s cubic-bezier(.4,1.6,.6,1) forwards; }
+  #screen-7 h1 { font-size: 1.45rem; text-align: center; margin-bottom: 6px; }
+  .next-steps {
+    width: 100%;
+    margin: 4px 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .next-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #f7f9fc;
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-align: left;
+  }
+  .next-step-num {
+    background: var(--green);
+    color: #fff;
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    min-width: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 900;
+    margin-top: 1px;
+  }
+  .next-step strong { display: block; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 2px; }
+  .next-step p { font-size: 0.83rem; color: var(--text-mid); font-weight: 600; margin: 0; }
+  .btn-map {
+    display: block;
+    width: 100%;
+    padding: 15px 24px;
+    background: #fff;
+    border: 2px solid var(--green);
+    color: var(--green);
+    border-radius: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s;
+    margin-top: 4px;
+  }
+  .btn-map:hover { background: var(--green-light); }
+
 
 
   /* Screen-2b staggered bullet animation */
@@ -555,12 +624,13 @@
     <button type="button" class="btn-primary" onclick="handleCustomOptions()" style="margin-top:12px">Continue</button>
   </div>
 
-  <!-- SCREEN 5: Done -->
+  <!-- SCREEN 7: Confirmation -->
   <div class="screen" id="screen-7">
-    <h1>Your first Class Meeting is ready</h1>
-    <p class="subtitle" id="confirmSubtitle">We're so happy to be helping you to get more voices involved at your school.</p>
-    <p class="subtitle" style="margin-bottom:20px">Your login will arrive within 24 hours.</p>
-    <div class="confirm-card">
+    <div class="success-check" id="successCheck">✓</div>
+    <h1 id="confirmHeading">You're all set! 🎉</h1>
+    <p class="subtitle" id="confirmSubtitle" style="margin-bottom:16px">We're so happy to be helping get more voices heard at your school.</p>
+
+    <div class="confirm-card" style="margin-bottom:16px">
       <div class="label">Your First Question</div>
       <div class="question-text" id="finalQuestion"></div>
       <img id="finalQuestionImage" src="" alt="Answer options" style="width:100%;border-radius:8px;margin-top:12px;display:none;">
@@ -569,8 +639,32 @@
         <p id="imageReminder" style="display:none;margin-top:12px;font-size:0.82rem;color:#7a8499;font-style:italic;"></p>
       </div>
     </div>
-    <button type="button" class="btn-primary" id="doneBtn" onclick="handleDone()" style="margin-top:20px">Done</button>
-    <p id="allSetMsg" style="display:none;text-align:center;font-size:16px;font-weight:700;color:#4a7c59;margin-top:16px;">You're all set! 🎉 Your login details will arrive shortly.</p>
+
+    <div class="next-steps">
+      <div class="next-step">
+        <div class="next-step-num">1</div>
+        <div>
+          <strong>Check your inbox</strong>
+          <p>Your login details will arrive within 24 hours.</p>
+        </div>
+      </div>
+      <div class="next-step">
+        <div class="next-step-num">2</div>
+        <div>
+          <strong>Log in and run your first meeting</strong>
+          <p>Your Class Meeting is live and ready to go.</p>
+        </div>
+      </div>
+      <div class="next-step">
+        <div class="next-step-num">3</div>
+        <div>
+          <strong>See who else is nearby</strong>
+          <p>Find other Smart School Councils members on our map.</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="https://smartschoolcouncils.org.uk/member-map/" class="btn-map" target="_blank" rel="noopener">🗺️ See our member map →</a>
   </div>
 
 </div>
@@ -852,9 +946,15 @@
   }
 
   function goToConfirmation() {
+    // Personalise heading and subtitle
+    const heading = document.getElementById('confirmHeading');
     const sub = document.getElementById('confirmSubtitle');
-    if (sub && schoolNameGlobal) sub.textContent = "We're so happy to be helping you to get more voices involved at " + schoolNameGlobal + '.';
-    handleFinish();
+    if (schoolNameGlobal) {
+      if (heading) heading.textContent = 'You\'re all set, ' + schoolNameGlobal + '! 🎉';
+      if (sub) sub.textContent = 'We\'re so happy to be helping get more voices heard at ' + schoolNameGlobal + '.';
+    }
+
+    // Populate question card
     const qEl = document.getElementById('finalQuestion');
     if (qEl) qEl.textContent = selectedQuestion;
     const imgEl = document.getElementById('finalQuestionImage');
@@ -866,7 +966,17 @@
         imgEl.style.display = 'none';
       }
     }
+
+    // Send data
+    handleFinish();
+
+    // Show screen, then animate checkmark + confetti
     goTo(7);
+    setTimeout(function() {
+      const check = document.getElementById('successCheck');
+      if (check) check.classList.add('pop');
+    }, 80);
+    launchConfetti(null, true);
   }
 
   // -------------------------------------------------------
@@ -927,8 +1037,10 @@
   renderDots();
   document.getElementById('chooseBtn').style.opacity = '0.5';
 
-  function launchConfetti(callback) {
+  function launchConfetti(callback, hidePopup) {
     const overlay = document.getElementById('confettiOverlay');
+    const popup = overlay ? overlay.querySelector('div') : null;
+    if (popup) popup.style.display = hidePopup ? 'none' : '';
     const canvas = document.getElementById('confettiCanvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
@@ -976,29 +1088,6 @@
   }
 
   
-  function handleDone() {
-    const btn = document.getElementById('doneBtn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    const timingBtn = document.querySelector('#screen-5 .btn-topic.selected');
-    const data = {
-      teacherEmail: document.getElementById('teacherEmail') ? document.getElementById('teacherEmail').value.trim() : '',
-      classNames: document.getElementById('classNames') ? document.getElementById('classNames').value.trim() : '',
-      topic: selectedTopic,
-      question: selectedQuestion,
-      timing: timingBtn ? timingBtn.textContent.trim() : '',
-    };
-
-    sendToActiveCampaign(data).then(() => {
-      btn.style.display = 'none';
-      document.getElementById('allSetMsg').style.display = 'block';
-    }).catch(() => {
-      btn.disabled = false;
-      btn.textContent = 'Done';
-      document.getElementById('allSetMsg').style.display = 'block';
-    });
-  }
 
   </script>
 
