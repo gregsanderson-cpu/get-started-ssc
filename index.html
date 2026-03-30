@@ -1128,17 +1128,9 @@
     const classes   = data.classNames.split(/[\n,]/).map(c => c.trim()).filter(Boolean);
     fetch('https://script.google.com/macros/s/AKfycbysZraDP2Hy2MCWExv4K4cn5W1i1EKilJDaUp9iXKwk3WAqyP3OaFA9TkCqH8X6EuVG/exec', {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ firstName, lastName, email: data.teacherEmail, schoolName: data.schoolName, classes, question: data.question, options: data.options || [] })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(result) {
-      if (result && result.lat && result.lng) {
-        pendingMapLat  = result.lat;
-        pendingMapLng  = result.lng;
-        pendingMapName = data.schoolName;
-        if (memberMapInstance) addNewSchoolPin();
-      }
     })
     .catch(function(err) { console.warn('GAS error:', err); });
   }
