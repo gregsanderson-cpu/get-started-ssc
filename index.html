@@ -1424,12 +1424,22 @@
   // -------------------------------------------------------
 
   async function sendToActiveCampaign(data) {
-    // AC proxy (non-blocking) — unchanged
-    fetch('https://bigdebate.club/ac-proxy.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    }).catch(err => console.warn('AC proxy error:', err));
+    // Detect URL provenance + test marker FIRST so we can gate side-effects below
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefilledFromUrl = !!(urlParams.get('name') && urlParams.get('email') && urlParams.get('school'));
+    const isTest = urlParams.get('test') === '1' || urlParams.get('demo') === '1';
+
+    // AC proxy (non-blocking). Skipped in test mode so we don't create real
+    // contacts / trigger real automation emails for QA runs.
+    if (!isTest) {
+      fetch('https://bigdebate.club/ac-proxy.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(err => console.warn('AC proxy error:', err));
+    } else {
+      supabaseDebug('AC proxy skipped (test mode)', 'info');
+    }
 
     // Parse name + classes once for both downstream writes
     const nameParts = data.teacherName.trim().split(/\s+/);
@@ -1438,11 +1448,6 @@
     const firstName = isTitled && nameParts.length > 1 ? nameParts[1] : nameParts[0];
     const lastName  = nameParts.slice(isTitled ? 2 : 1).join(' ');
     const classes   = data.classNames.split(/[\n,]/).map(c => c.trim()).filter(Boolean);
-
-    // Detect prefill-from-URL provenance + test marker
-    const urlParams = new URLSearchParams(window.location.search);
-    const prefilledFromUrl = !!(urlParams.get('name') && urlParams.get('email') && urlParams.get('school'));
-    const isTest = urlParams.get('test') === '1' || urlParams.get('demo') === '1';
 
     // Pull selected-school metadata (urn/postcode/type/phase/country/lat/lng).
     // selectedSchool is populated by acSelect when the user picks from the dropdown.
@@ -1495,8 +1500,9 @@
       supabaseDebug('Supabase: client not available, skipping insert', 'err');
     }
 
-    // GAS onboarding script (non-blocking) — kept during dual-write window
-    if (DUAL_WRITE_TO_GAS) {
+    // GAS onboarding script (non-blocking) — kept during dual-write window.
+    // Skipped in test mode so we don't pollute the Master Sheet with QA rows.
+    if (DUAL_WRITE_TO_GAS && !isTest) {
       fetch('https://script.google.com/macros/s/AKfycbysZraDP2Hy2MCWExv4K4cn5W1i1EKilJDaUp9iXKwk3WAqyP3OaFA9TkCqH8X6EuVG/exec', {
         method: 'POST',
         mode: 'no-cors',
@@ -1504,6 +1510,8 @@
         body: JSON.stringify({ token: 'sscc-onboard-2026', firstName, lastName, email: data.teacherEmail, schoolName: data.schoolName, classes, question: data.question, options: data.options || [] })
       })
       .catch(function(err) { console.warn('GAS error:', err); });
+    } else if (isTest) {
+      supabaseDebug('GAS write skipped (test mode)', 'info');
     }
   }
 
