@@ -547,12 +547,20 @@
   #screen-2b.visible .s2t2-bullet:nth-child(3) { animation: up 0.35s 1.0s ease both; }
 
   /* ── SCHOOL AUTOCOMPLETE (ported from Try Tool) ── */
-  .ac-wrap { position: relative; }
+  .ac-wrap { position: relative; margin-bottom: 0; }
+  /* Strip the input's default 16px margin-bottom so the dropdown sits flush */
+  .ac-wrap input[type="text"] { margin-bottom: 0; }
+  /* Square off the input's bottom corners when the dropdown is open
+     so the join with the dropdown looks like one continuous element. */
+  .ac-wrap:has(.ac-dropdown.open) input[type="text"] {
+    border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+  }
   .ac-dropdown {
     display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
     background: var(--bg); border: 2px solid var(--green); border-top: none;
-    border-radius: 0 0 10px 10px; max-height: 260px; overflow-y: auto;
+    border-radius: 0 0 12px 12px; max-height: 260px; overflow-y: auto;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 0;
   }
   .ac-dropdown.open { display: block; }
   .ac-item {
