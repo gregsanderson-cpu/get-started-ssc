@@ -250,25 +250,45 @@
     margin-right: 4px;
   }
 
-  /* Question cards */
-  .question-list { width: 100%; display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+  /* Question cards (typography + pills matched to Try Tool) */
+  .question-list { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
   .q-card {
     width: 100%;
-    padding: 16px;
+    padding: 14px 16px;
     background: #fff;
     border: 2px solid var(--border);
-    border-radius: 14px;
+    border-radius: 12px;
     cursor: pointer;
     text-align: left;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.15s, background 0.15s;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    position: relative;
   }
-  .q-card:hover { border-color: var(--green); }
-  .q-card.selected { border-color: var(--green); background: #f0faf4; }
+  .q-card:hover { border-color: var(--green); background: var(--green-light); }
+  .q-card.selected { border-color: var(--green); background: var(--green-light); }
+  .q-card-tags {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; gap: 8px; flex-wrap: wrap;
+  }
+  .q-card-tag {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--green); background: var(--green-light);
+    border: 1px solid var(--green);
+    padding: 3px 8px; border-radius: 100px;
+    display: inline-block;
+  }
+  .q-card-bdc {
+    font-size: 10px; font-weight: 800;
+    background: #fff8e1; color: #92400e;
+    border: 1px solid #f6e060;
+    border-radius: 100px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
   .q-card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1a1a2e;
-    line-height: 1.4;
+    font-size: 14px; font-weight: 700; line-height: 1.4;
+    color: var(--text-dark);
   }
   .q-card-visual {
     max-height: 0;
@@ -329,20 +349,23 @@
   .or-divider::before { left: 0; }
   .or-divider::after { right: 0; }
 
-  input[type="text"] {
+  input[type="text"], input[type="email"] {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border: 2px solid var(--border);
-    border-radius: 14px;
-    font-family: inherit;
-    font-size: 0.95rem;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--text-dark);
     outline: none;
     transition: border-color 0.2s;
     margin-bottom: 16px;
+    background: var(--bg);
+    appearance: none;
   }
-  input[type="text"]:focus { border-color: var(--green); }
-  input[type="text"]::placeholder { color: #bbb; }
+  input[type="text"]:focus, input[type="email"]:focus { border-color: var(--green); }
+  input[type="text"]::placeholder, input[type="email"]::placeholder { color: #bbb; font-weight: 600; }
 
   /* Image offer card */
   .image-offer-card {
@@ -523,6 +546,63 @@
   #screen-2b.visible .s2t2-bullet:nth-child(2) { animation: up 0.35s 0.75s ease both; }
   #screen-2b.visible .s2t2-bullet:nth-child(3) { animation: up 0.35s 1.0s ease both; }
 
+  /* ── SCHOOL AUTOCOMPLETE (ported from Try Tool) ── */
+  .ac-wrap { position: relative; }
+  .ac-dropdown {
+    display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+    background: var(--bg); border: 2px solid var(--green); border-top: none;
+    border-radius: 0 0 10px 10px; max-height: 260px; overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .ac-dropdown.open { display: block; }
+  .ac-item {
+    padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .ac-item:last-child { border-bottom: none; }
+  .ac-item:hover, .ac-item.active { background: var(--green-light); }
+  .ac-name { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+  .ac-meta { font-size: 11px; color: var(--text-mid); }
+  .ac-spinner { padding: 12px 14px; font-size: 12px; color: var(--text-mid); }
+  /* "My school isn't listed" lives as a footer row INSIDE the dropdown
+     so it stays visible whatever the dropdown state. */
+  .ac-footer {
+    padding: 10px 14px; cursor: pointer;
+    border-top: 1px solid var(--border);
+    background: var(--green-light);
+    color: var(--green-dark); font-size: 12px; font-weight: 700;
+    text-align: center;
+  }
+  .ac-footer:hover { background: var(--green); color: #fff; }
+  #manual-type-wrap label { display: block; font-size: 13px; font-weight: 800; color: var(--text-dark); margin-bottom: 7px; }
+  #manual-type-wrap select {
+    width: 100%; padding: 12px 14px;
+    font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 600;
+    color: var(--text-dark);
+    border: 2px solid var(--border); border-radius: 12px; background: var(--bg);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; background-size: 9px;
+  }
+
+  /* ── PROGRESSIVE FIELD REVEAL (ported from Try Tool) ── */
+  .field-reveal {
+    max-height: 0; opacity: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease,
+                margin-top 0.4s ease, margin-bottom 0.4s ease;
+    margin-top: 0 !important; margin-bottom: 0 !important;
+  }
+  .field-reveal.shown {
+    max-height: 200px; opacity: 1;
+    margin-top: 12px !important; margin-bottom: 12px !important;
+  }
+  .btn-reveal {
+    max-height: 0; opacity: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease, margin-top 0.4s ease;
+    margin-top: 0 !important;
+  }
+  .btn-reveal.shown { max-height: 120px; opacity: 1; margin-top: 16px !important; }
+
 </style>
 </head>
 <body>
@@ -538,24 +618,47 @@
   <!-- Progress dots -->
   <div class="dots" id="dots"></div>
 
-  <!-- SCREEN 1: Welcome -->
+  <!-- SCREEN 1: Welcome (progressive disclosure) -->
   <div class="screen visible" id="screen-1">
     <h1>Let's get your school set up</h1>
     <p class="subtitle" style="margin-bottom:24px">This takes about two minutes and needs to be completed by the lead teacher.</p>
+
+    <!-- Field 1: School name (always visible) -->
     <div style="width:100%;margin-bottom:12px">
-      <label style="display:block;font-weight:600;color:var(--text-dark);font-size:0.95rem;margin-bottom:8px">Lead teacher name</label>
-      <input type="text" id="teacherName" placeholder="e.g. Mrs Sarah Jones" autocomplete="off" onkeydown="if(event.key==='Enter'){document.getElementById('teacherEmail').focus();}">
-    </div>
-    <div style="width:100%;margin-bottom:12px">
-      <label style="display:block;font-weight:600;color:var(--text-dark);font-size:0.95rem;margin-bottom:8px">Lead teacher email</label>
-      <input type="text" id="teacherEmail" placeholder="e.g. s.jones@greenfield.sch.uk" autocomplete="off" onkeydown="if(event.key==='Enter'){document.getElementById('schoolName').focus();}">
-    </div>
-    <div style="width:100%;margin-bottom:20px">
-      <label style="display:block;font-weight:600;color:var(--text-dark);font-size:0.95rem;margin-bottom:8px">School name</label>
-      <input type="text" id="schoolName" placeholder="e.g. Greenfield Primary School" autocomplete="off" onkeydown="if(event.key==='Enter'){handleStart();}">
+      <label style="display:block;font-size:13px;font-weight:800;color:var(--text-dark);margin-bottom:7px">School name</label>
+      <div class="ac-wrap">
+        <input type="text" id="schoolName" placeholder="Start typing your school name…" autocomplete="off" oninput="acInput(this.value)" onkeydown="acKey(event)">
+        <div class="ac-dropdown" id="ac-dropdown"></div>
+      </div>
+      <div id="manual-type-wrap" style="display:none; margin-top:12px;">
+        <label for="school-type">School type</label>
+        <select id="school-type" onchange="onManualTypeChange()">
+          <option value="">Select…</option>
+          <option>Primary</option>
+          <option>Secondary</option>
+          <option>SEN / PRU</option>
+          <option>Primary (Independent)</option>
+          <option>Secondary (Independent)</option>
+          <option>International / Other</option>
+        </select>
+      </div>
       <p id="schoolError" style="color:#e53e3e;font-size:0.85rem;margin-top:6px;display:none;"></p>
     </div>
-    <button type="button" class="btn-primary" onclick="handleStart()">Continue</button>
+
+    <!-- Field 2: Lead teacher name (revealed after school chosen) -->
+    <div class="field-reveal" id="f-teacher-name" style="width:100%">
+      <label style="display:block;font-size:13px;font-weight:800;color:var(--text-dark);margin-bottom:7px">Lead teacher name</label>
+      <input type="text" id="teacherName" placeholder="e.g. Mrs Sarah Jones" autocomplete="off" oninput="onTeacherNameInput()" onkeydown="if(event.key==='Enter'){document.getElementById('teacherEmail').focus();}">
+    </div>
+
+    <!-- Field 3: Lead teacher email (revealed after name has content) -->
+    <div class="field-reveal" id="f-teacher-email" style="width:100%">
+      <label style="display:block;font-size:13px;font-weight:800;color:var(--text-dark);margin-bottom:7px">Lead teacher email</label>
+      <input type="email" id="teacherEmail" placeholder="e.g. s.jones@greenfield.sch.uk" autocomplete="off" oninput="onTeacherEmailInput()" onkeydown="if(event.key==='Enter'){handleStart();}">
+    </div>
+
+    <!-- Continue (revealed when email looks valid) -->
+    <button type="button" class="btn-primary btn-reveal" id="continueBtn" onclick="handleStart()">Continue</button>
   </div>
 
   <!-- SCREEN 2: Class names -->
@@ -707,6 +810,10 @@
         if (name  && document.getElementById('teacherName'))  document.getElementById('teacherName').value  = name;
         if (email && document.getElementById('teacherEmail')) document.getElementById('teacherEmail').value = email;
         if (school && document.getElementById('schoolName'))  document.getElementById('schoolName').value   = school;
+        // Auto-reveal pre-filled fields so the wizard isn't stuck on the school step
+        if (school) revealField('f-teacher-name');
+        if (school && name) revealField('f-teacher-email');
+        if (school && name && email && email.includes('@')) revealField('continueBtn');
       });
     }
   })();
@@ -825,6 +932,153 @@
     btn.classList.add('selected');
   }
 
+  // ── PROGRESSIVE FIELD REVEAL ──────────────────────────────────────────
+  // Triggered from acSelect / useManualSchool / teacher-name input / email input.
+  function revealField(id) {
+    const el = document.getElementById(id);
+    if (el && !el.classList.contains('shown')) el.classList.add('shown');
+  }
+  function onTeacherNameInput() {
+    const v = (document.getElementById('teacherName').value || '').trim();
+    if (v.length > 0) revealField('f-teacher-email');
+  }
+  function onTeacherEmailInput() {
+    const v = (document.getElementById('teacherEmail').value || '').trim();
+    // Be permissive — full validation still happens in handleStart
+    if (v.includes('@') && v.length > 4) revealField('continueBtn');
+  }
+  function onManualTypeChange() {
+    // User picked a school type for the manual fallback — they can proceed
+    revealField('f-teacher-name');
+    setTimeout(() => { const el = document.getElementById('teacherName'); if (el) el.focus(); }, 50);
+  }
+
+  // ── SCHOOL AUTOCOMPLETE (ported from Try Tool) ─────────────────────────
+  // Hits the same bigdebate.club/school-search.php endpoint as the Try tool.
+  // Captures URN, postcode, school type, phase, country, lat/lng on selection.
+  const SCHOOL_SEARCH_URL = 'https://bigdebate.club/school-search.php';
+  const selectedSchool = { urn: '', postcode: '', type: '', phase: '', country: '', lat: null, lng: null };
+  let acTimer = null, acIdx = -1;
+
+  function resetSelectedSchool() {
+    selectedSchool.urn = '';
+    selectedSchool.postcode = '';
+    selectedSchool.type = '';
+    selectedSchool.phase = '';
+    selectedSchool.country = '';
+    selectedSchool.lat = null;
+    selectedSchool.lng = null;
+  }
+
+  // Renders a "My school isn't listed" footer inside the dropdown so it
+  // stays visible alongside results / spinner / no-results states.
+  const NOT_LISTED_FOOTER = '<div class="ac-footer" onmousedown="useManualSchool()">My school isn\'t listed</div>';
+
+  function acInput(val) {
+    // Editing the input means any previous selection is stale
+    resetSelectedSchool();
+    clearTimeout(acTimer);
+    const dd = document.getElementById('ac-dropdown');
+    if (!dd) return;
+    if (val.length < 2) {
+      dd.innerHTML = ''; dd.classList.remove('open');
+      return;
+    }
+    dd.innerHTML = '<div class="ac-spinner">Searching…</div>';
+    dd.classList.add('open');
+    acTimer = setTimeout(() => {
+      fetch(SCHOOL_SEARCH_URL + '?q=' + encodeURIComponent(val))
+        .then(r => r.json())
+        .then(results => {
+          acIdx = -1;
+          if (!Array.isArray(results) || !results.length) {
+            dd.innerHTML = '<div class="ac-spinner">No schools found. Try a different spelling.</div>' + NOT_LISTED_FOOTER;
+            return;
+          }
+          dd.innerHTML = results.map((s, i) =>
+            '<div class="ac-item" data-idx="' + i + '" onmousedown="acSelect(' + JSON.stringify(s).replace(/"/g,'&quot;') + ')">' +
+              '<span class="ac-name">' + s.name + '</span>' +
+              '<span class="ac-meta">' + (s.town ? s.town + ' · ' : '') + (s.postcode || '') + '</span>' +
+            '</div>'
+          ).join('') + NOT_LISTED_FOOTER;
+        })
+        .catch(() => {
+          dd.innerHTML = '<div class="ac-spinner">Search unavailable. Type your school name then click the option below.</div>' + NOT_LISTED_FOOTER;
+        });
+    }, 300);
+  }
+
+  function acSelect(s) {
+    const input = document.getElementById('schoolName');
+    if (input) input.value = s.name;
+    const dd = document.getElementById('ac-dropdown'); if (dd) dd.classList.remove('open');
+    const mw = document.getElementById('manual-type-wrap'); if (mw) mw.style.display = 'none';
+    selectedSchool.urn      = s.urn      || '';
+    selectedSchool.postcode = s.postcode || '';
+    selectedSchool.type     = guessSchoolType(s.phase || '', s.type || '');
+    selectedSchool.phase    = s.phase    || '';
+    selectedSchool.country  = s.country  || '';
+    selectedSchool.lat = null; selectedSchool.lng = null;
+    // Geocode postcode silently for the confirmation map pin
+    if (s.postcode) {
+      fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(s.postcode))
+        .then(r => r.json())
+        .then(d => { if (d.status === 200 && d.result) { selectedSchool.lat = d.result.latitude; selectedSchool.lng = d.result.longitude; } })
+        .catch(() => {});
+    }
+    // Unfold the next field
+    revealField('f-teacher-name');
+    setTimeout(() => { const el = document.getElementById('teacherName'); if (el) el.focus(); }, 200);
+  }
+
+  function acKey(e) {
+    // Allow Enter to submit if no dropdown items are showing (normal field flow)
+    const dd = document.getElementById('ac-dropdown');
+    const items = dd ? dd.querySelectorAll('.ac-item') : [];
+    if (!items.length) {
+      if (e.key === 'Enter') { e.preventDefault(); handleStart(); }
+      return;
+    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); acIdx = Math.min(acIdx + 1, items.length - 1); acHighlight(items); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); acIdx = Math.max(acIdx - 1, 0); acHighlight(items); }
+    else if (e.key === 'Enter' && acIdx >= 0) { e.preventDefault(); items[acIdx].dispatchEvent(new MouseEvent('mousedown')); }
+    else if (e.key === 'Escape') { dd.classList.remove('open'); }
+  }
+
+  function acHighlight(items) {
+    items.forEach((el, i) => el.classList.toggle('active', i === acIdx));
+    if (acIdx >= 0) items[acIdx].scrollIntoView({ block: 'nearest' });
+  }
+
+  function guessSchoolType(phase, type) {
+    const isIndep   = /independent/i.test(type);
+    const isSpecial = /special|pupil referral/i.test(type) || /special/i.test(phase);
+    if (isSpecial) return 'SEN / PRU';
+    if (/primary|middle/i.test(phase)) return isIndep ? 'Primary (Independent)' : 'Primary';
+    if (/secondary/i.test(phase))      return isIndep ? 'Secondary (Independent)' : 'Secondary';
+    return '';
+  }
+
+  function useManualSchool() {
+    // User says their school isn't in the list → show the school-type dropdown
+    // so we still capture type, but URN/postcode/lat/lng stay null.
+    resetSelectedSchool();
+    const mw = document.getElementById('manual-type-wrap'); if (mw) mw.style.display = 'block';
+    const dd = document.getElementById('ac-dropdown'); if (dd) dd.classList.remove('open');
+    // Unfold the next fields so the user can proceed; type and name can be filled in any order
+    revealField('f-teacher-name');
+    setTimeout(() => { const el = document.getElementById('teacherName'); if (el) el.focus(); }, 50);
+  }
+
+  // Close dropdown when clicking outside the wrap
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.ac-wrap')) {
+      const dd = document.getElementById('ac-dropdown');
+      if (dd) dd.classList.remove('open');
+    }
+  });
+  // ───────────────────────────────────────────────────────────────────────
+
   function handleClassNames() {
     const val = document.getElementById('classNames').value.trim();
     if (!val) { showError('classError', 'Please enter at least one class name.'); return; }
@@ -840,14 +1094,18 @@
     questions[topic].forEach(q => {
       const card = document.createElement('div');
       card.className = 'q-card';
-      const recBadge = q.recommended ? '<span class="q-star">⭐ Recommended</span>' : '';
+      const isBdc = q.text.startsWith('Big Debate Club');
+      const displayText = isBdc ? q.text.replace(/^Big Debate Club\s*\|\s*/, '') : q.text;
+      const starPrefix = q.recommended ? '⭐ ' : '';
+      const tagHtml = `<span class="q-card-tag">${starPrefix}${topic}</span>`;
+      const bdcHtml = isBdc ? `<span class="q-card-bdc">🗣️ Big Debate Club</span>` : '';
       const visual = q.image
         ? `<img src="${q.image}" alt="Answer options" style="width:100%;max-height:130px;object-fit:contain;border-radius:8px;margin-top:10px;display:block;">`
         : q.options ? `<ul class="q-options">${q.options.map(o => `<li>${o}</li>`).join('')}</ul>` : '';
-      const bdcNote = q.text.startsWith('Big Debate Club') ? '<div style="margin-top:10px;font-size:0.82rem;color:var(--green);font-weight:700;">The Big Debate Club question comes with a video and debate pack!</div>' : '';
+      const bdcNote = isBdc ? '<div style="margin-top:10px;font-size:0.82rem;color:var(--green);font-weight:700;">Big Debate Club question. Includes a video intro and a full debate pack.</div>' : '';
       card.innerHTML = `
-        ${recBadge}
-        <div class="q-card-title">${q.text}</div>
+        <div class="q-card-tags">${tagHtml}${bdcHtml}</div>
+        <div class="q-card-title">${displayText}</div>
         <div class="q-card-visual">${visual}${bdcNote}</div>
       `;
       card.onclick = () => selectQuestion(card, q.text, q.image || '', q.options || []);
@@ -1178,6 +1436,13 @@
     const prefilledFromUrl = !!(urlParams.get('name') && urlParams.get('email') && urlParams.get('school'));
     const isTest = urlParams.get('test') === '1' || urlParams.get('demo') === '1';
 
+    // Pull selected-school metadata (urn/postcode/type/phase/country/lat/lng).
+    // selectedSchool is populated by acSelect when the user picks from the dropdown.
+    // For manual entries the school_type comes from the fallback <select id="school-type">.
+    const _selSchool = (typeof selectedSchool === 'object' && selectedSchool) ? selectedSchool : {};
+    const _manualTypeEl = document.getElementById('school-type');
+    const _manualType = _manualTypeEl ? _manualTypeEl.value : '';
+
     // Supabase insert (non-blocking, awaits only to log the error if any)
     // Note: do NOT chain .select() — RLS allows anon insert but blocks anon SELECT,
     // so requesting the row back triggers a 401/RLS error.
@@ -1199,7 +1464,15 @@
           prefilled_from_url: prefilledFromUrl,
           user_agent:         navigator.userAgent,
           referrer:           document.referrer || null,
-          is_test:            isTest
+          is_test:            isTest,
+          // School metadata (from typeahead selection, or manual-type fallback)
+          urn:                _selSchool.urn      || null,
+          school_postcode:    _selSchool.postcode || null,
+          school_type:        _selSchool.type     || _manualType || null,
+          school_phase:       _selSchool.phase    || null,
+          school_country:     _selSchool.country  || null,
+          school_lat:         _selSchool.lat      || null,
+          school_lng:         _selSchool.lng      || null
         })
         .then(({ error }) => {
           if (error) {
@@ -1211,7 +1484,7 @@
           }
         });
     } else {
-      supabaseDebug('Supabase: client not available — skipping insert', 'err');
+      supabaseDebug('Supabase: client not available, skipping insert', 'err');
     }
 
     // GAS onboarding script (non-blocking) — kept during dual-write window
