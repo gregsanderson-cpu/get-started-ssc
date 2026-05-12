@@ -11,6 +11,8 @@
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "wkaq9koelj");
 </script>
+<!-- Supabase JS client (for registrations table write) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>Get Started – Smart School Councils</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <style>
@@ -1119,32 +1121,116 @@
   const AC_API_KEY = 'YOUR_ACTIVECAMPAIGN_API_KEY'; // found in AC → Settings → Developer
   // -------------------------------------------------------
 
+  // -------------------------------------------------------
+  // SUPABASE — onboarder writes registrations directly here,
+  // alongside the legacy GAS macro. The publishable key is
+  // safe in the browser; RLS allows insert-only for anon.
+  // -------------------------------------------------------
+  // London (eu-west-2) project — UK data residency
+  const SUPABASE_URL  = 'https://ltvcbtrlklqathlptqwv.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable__89OQfi41ibEk8s76m1eyg__Fm9DnSF';
+  const supabaseClient = (window.supabase && window.supabase.createClient)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+    : null;
+  if (!supabaseClient) console.warn('Supabase client failed to initialise');
+
+  // On-page debug toast (visible only when ?debug=1 is on the URL).
+  function supabaseDebug(msg, kind) {
+    if (new URLSearchParams(location.search).get('debug') !== '1') return;
+    let el = document.getElementById('supabase-debug-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'supabase-debug-toast';
+      el.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:99999;padding:10px 14px;border-radius:10px;font:600 13px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;max-width:380px;box-shadow:0 4px 20px rgba(0,0,0,0.18);';
+      document.body.appendChild(el);
+    }
+    const bg = kind === 'ok' ? '#3aac5d' : kind === 'err' ? '#d64545' : '#444';
+    el.style.background = bg;
+    el.style.color = '#fff';
+    el.textContent = msg;
+  }
+  supabaseDebug(supabaseClient ? 'Supabase: client initialised' : 'Supabase: client FAILED to load (CDN blocked?)', supabaseClient ? 'info' : 'err');
+
+  // Dual-write window flag. While true, both GAS and Supabase get the row,
+  // so you can compare and trust before retiring the GAS path. Flip to false
+  // after ~7 days of clean Supabase rows.
+  const DUAL_WRITE_TO_GAS = true;
+  // -------------------------------------------------------
+
   async function sendToActiveCampaign(data) {
-    // AC proxy (non-blocking)
+    // AC proxy (non-blocking) — unchanged
     fetch('https://bigdebate.club/ac-proxy.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }).catch(err => console.warn('AC proxy error:', err));
 
-    // GAS onboarding script (non-blocking)
+    // Parse name + classes once for both downstream writes
     const nameParts = data.teacherName.trim().split(/\s+/);
     const titles = ['mr','mrs','ms','miss','dr'];
     const isTitled = titles.includes((nameParts[0]||'').toLowerCase().replace('.',''));
     const firstName = isTitled && nameParts.length > 1 ? nameParts[1] : nameParts[0];
     const lastName  = nameParts.slice(isTitled ? 2 : 1).join(' ');
     const classes   = data.classNames.split(/[\n,]/).map(c => c.trim()).filter(Boolean);
-    fetch('https://script.google.com/macros/s/AKfycbysZraDP2Hy2MCWExv4K4cn5W1i1EKilJDaUp9iXKwk3WAqyP3OaFA9TkCqH8X6EuVG/exec', {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ token: 'sscc-onboard-2026', firstName, lastName, email: data.teacherEmail, schoolName: data.schoolName, classes, question: data.question, options: data.options || [] })
-    })
-    .catch(function(err) { console.warn('GAS error:', err); });
+
+    // Detect prefill-from-URL provenance + test marker
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefilledFromUrl = !!(urlParams.get('name') && urlParams.get('email') && urlParams.get('school'));
+    const isTest = urlParams.get('test') === '1' || urlParams.get('demo') === '1';
+
+    // Supabase insert (non-blocking, awaits only to log the error if any)
+    // Note: do NOT chain .select() — RLS allows anon insert but blocks anon SELECT,
+    // so requesting the row back triggers a 401/RLS error.
+    if (supabaseClient) {
+      supabaseDebug('Supabase: inserting…', 'info');
+      supabaseClient
+        .from('registrations')
+        .insert({
+          teacher_name:       data.teacherName,
+          teacher_email:      data.teacherEmail,
+          school_name:        data.schoolName,
+          class_names_raw:    data.classNames,
+          classes:            classes,
+          topic:              data.topic || null,
+          question:           data.question || null,
+          question_options:   data.options || [],
+          is_custom_question: !!(data.options && data.options.length > 0 && data.question && (typeof questions === 'undefined' || !Object.values(questions).flat().some(q => q.text === data.question))),
+          timing:             data.timing || null,
+          prefilled_from_url: prefilledFromUrl,
+          user_agent:         navigator.userAgent,
+          referrer:           document.referrer || null,
+          is_test:            isTest
+        })
+        .then(({ error }) => {
+          if (error) {
+            console.warn('Supabase insert error:', error);
+            supabaseDebug('Supabase ERR: ' + (error.message || JSON.stringify(error)), 'err');
+          } else {
+            console.log('Supabase insert ok');
+            supabaseDebug('Supabase OK: row inserted', 'ok');
+          }
+        });
+    } else {
+      supabaseDebug('Supabase: client not available — skipping insert', 'err');
+    }
+
+    // GAS onboarding script (non-blocking) — kept during dual-write window
+    if (DUAL_WRITE_TO_GAS) {
+      fetch('https://script.google.com/macros/s/AKfycbysZraDP2Hy2MCWExv4K4cn5W1i1EKilJDaUp9iXKwk3WAqyP3OaFA9TkCqH8X6EuVG/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ token: 'sscc-onboard-2026', firstName, lastName, email: data.teacherEmail, schoolName: data.schoolName, classes, question: data.question, options: data.options || [] })
+      })
+      .catch(function(err) { console.warn('GAS error:', err); });
+    }
   }
 
   function handleFinish() {
-    const timingBtn = document.querySelector('#screen-5 .btn-topic.selected');
+    // Timing buttons live in screen-6 ("When might you run your first Class Meeting?"),
+    // not screen-5 (which is the question picker). The original onboarder had this wrong
+    // and timing always came through as null.
+    const timingBtn = document.querySelector('#screen-6 .btn-topic.selected');
     const data = {
       type: 'onboarding-complete',
       teacherName: document.getElementById('teacherName') ? document.getElementById('teacherName').value.trim() : '',
